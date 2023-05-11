@@ -1,5 +1,6 @@
-import './App.css';
 import  { useState } from 'react';
+import './App.css';
+import Navigation from './components/Navigation';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -12,7 +13,8 @@ function App() {
 
   return (
     <div className="App">
-      <p>You cliced {count} times</p>
+      <Navigation />
+      <p>You clicked {count} times</p>
       <button className={color} onClick={handlerClick}>
         Click me!
       </button>  
