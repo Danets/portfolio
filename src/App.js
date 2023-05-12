@@ -1,6 +1,7 @@
 import  { useState } from 'react';
 import './App.css';
 import Navigation from './components/Navigation';
+import Login from './pages/signin/Login';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -14,10 +15,7 @@ function App() {
   return (
     <div className="App">
       <Navigation />
-      <p>You clicked {count} times</p>
-      <button className={color} onClick={handlerClick}>
-        Click me!
-      </button>  
+      <Login />
     </div>
   );
 }
