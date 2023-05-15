@@ -2,6 +2,7 @@ import  { useState } from 'react';
 import './App.css';
 import Navigation from './components/Navigation';
 import Login from './pages/signin/Login';
+import Posts from './pages/post/Posts';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -16,6 +17,7 @@ function App() {
     <div className="App">
       <Navigation />
       <Login />
+      <Posts />
     </div>
   );
 }
