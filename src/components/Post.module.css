@@ -1,0 +1,8 @@
+.post {
+    max-width: 500px;
+    width: 50%;
+    padding: 6px;
+    margin: 0 0 4px 0;
+    border: 3px solid green;
+    border-radius: 5px;
+}

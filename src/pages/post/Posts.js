@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Post from "../../components/Post";
-import "./Posts.css";
+import styles from "./Posts.module.css";
 
-const API = "https://jsonplaceholder.typicode.com/posts";
+const API = "https://sonplaceholder.typicode.com/posts";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
@@ -16,7 +16,7 @@ const Posts = () => {
         const posts = await response.json();
         setPosts(posts);
       } catch (error) {
-        setError(error);
+        setError(error.message);
       }
       setLoading(false);
     })();
