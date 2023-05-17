@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Post from "../../components/Post";
+import Post from "../../components/post/Post";
 import styles from "./Posts.module.css";
 
 const API = "https://sonplaceholder.typicode.com/posts";

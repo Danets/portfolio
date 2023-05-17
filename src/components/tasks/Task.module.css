@@ -1,0 +1,15 @@
+.task {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    max-width: 300px;
+    margin: 8px auto;
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+.text {
+    width: 100%;
+    text-align: left;
+}

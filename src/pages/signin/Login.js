@@ -6,7 +6,6 @@ const Login = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(data);
     setFormdata({
       username: "",
       password: "",
