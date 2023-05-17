@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Post from "../../components/post/Post";
 import styles from "./Posts.module.css";
 
-const API = "https://sonplaceholder.typicode.com/posts";
+const API = "https://jsonplaceholder.typicode.com/posts";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);

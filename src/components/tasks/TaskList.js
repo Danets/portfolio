@@ -1,10 +1,15 @@
 import Task from "../../components/tasks/Task";
 
-const TaskList = ({ tasks }) => {
+const TaskList = ({ tasks, onRemove, toggleCompete }) => {
   return (
     <>
-      {tasks.map((task, idx) => (
-        <Task key={idx} task={task} />
+      {tasks.map((task) => (
+        <Task
+          key={task.id}
+          task={task}
+          onRemove={onRemove}
+          toggleCompete={toggleCompete}
+        />
       ))}
     </>
   );

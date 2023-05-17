@@ -1,16 +1,16 @@
 
-const TaskForm = ({value, handleSubmit, handleChangeInput}) => {
+const TaskForm = ({value, submit, changeInput}) => {
   
   return (
     <>
       <h3>Input Task</h3>
-      <form onSubmit={(e) => handleSubmit(e)}>
+      <form onSubmit={(e) => submit(e)}>
         <input
           type="text"
           placeholder="Enter Task"
           value={value}
           required
-          onChange={(e) => handleChangeInput(e)}
+          onChange={(e) => changeInput(e)}
         />
 
         <button type="submit">Submit</button>
