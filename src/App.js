@@ -1,17 +1,25 @@
-import './App.css';
-import Navigation from './components/navigation/Navigation';
-import Login from './pages/signin/Login';
-import Posts from './pages/posts/Posts';
-import TaskPage from './pages/tasks/TaskPage';
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import "./App.css";
+import Navigation from "./components/navigation/Navigation";
+import Login from "./pages/signin/Login";
+import Posts from "./pages/posts/Posts";
+import TaskPage from "./pages/tasks/TaskPage";
 
 function App() {
   return (
-    <div className="App">
-      <Navigation />
-      {/* <Login />
-      <Posts /> */}
-      <TaskPage />
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <Navigation />
+        <Outlet />
+        <Routes>
+          <Route path="/" element={<h1>Home</h1>} />
+          <Route path="/tasks" element={<TaskPage />} />
+          <Route path="/posts" element={<Posts />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="*" element={<h1>Not found</h1>} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
