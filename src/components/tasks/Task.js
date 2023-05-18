@@ -4,7 +4,7 @@ import styles from "./Task.module.css";
 const Task = ({ task, onRemove, toggleCompete }) => {
   return (
     <div className={styles.task}>
-      <div className={styles.text}>
+      <div className={`${styles.text} ${task.isCompleted ? styles.completed : ''}`}>
         {task.title}
         <div className={styles.icons}>
         <FaTrash className={styles.deleteIcon} onClick={() => onRemove(task.id)}/>

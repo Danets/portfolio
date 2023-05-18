@@ -55,6 +55,7 @@ const TaskPage = () => {
           </Button>
           <Button
             title="remove"
+            disabled={!amountCompletedTasks}
             onClick={() => setTask(tasks.filter((task) => !task.isCompleted))}
           >
             Remove Completed
