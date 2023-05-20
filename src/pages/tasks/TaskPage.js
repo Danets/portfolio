@@ -10,13 +10,14 @@ const TaskPage = () => {
   const [tasks, setTask] = useState([]);
   const [value, setValue] = useState("");
 
+  const task = {
+    id: uuid(),
+    title: value,
+    isCompleted: false,
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const task = {
-      id: uuid(),
-      title: value,
-      isCompleted: false,
-    };
     setTask([...tasks, task]);
     setValue("");
   };
@@ -48,7 +49,7 @@ const TaskPage = () => {
         submit={handleSubmit}
         changeInput={handleChangeInput}
       />
-       {!!tasks.length && (
+      {!!tasks.length && (
         <div className={styles.actions}>
           <Button title="reset" onClick={() => setTask([])}>
             Reset
