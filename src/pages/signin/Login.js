@@ -6,21 +6,22 @@ const Login = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log(data);
     setFormdata({
       username: "",
       password: "",
     });
   };
   const handleChangeInput = (event, name) => {
-    setFormdata({
-      ...data,
+    setFormdata((prevstate) => ({
+      ...prevstate,
       [name]: event.target.value,
-    });
+    }));
   };
   return (
     <>
       <h3>Login Form</h3>
-      <form onSubmit={(e) => handleSubmit(e)}>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Enter Username"

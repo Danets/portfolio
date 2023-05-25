@@ -3,11 +3,10 @@ import queryString from "query-string";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Post from "../../components/post/Post";
-import styles from "./Posts.module.css";
 
 const API = "https://jsonplaceholder.typicode.com/posts";
 
-const Posts = () => {
+const PostsPage = () => {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(true);
@@ -80,4 +79,4 @@ const Posts = () => {
   );
 };
 
-export default Posts;
+export default PostsPage;

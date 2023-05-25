@@ -18,7 +18,7 @@ const TaskPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setTask([...tasks, task]);
+    setTask((prevstate) => [...prevstate, task]);
     setValue("");
   };
 
