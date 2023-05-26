@@ -1,15 +1,18 @@
 import queryString from "query-string";
 
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Post from "../../components/post/Post";
+import {AuthContext} from "../../context/AuthContext";
 
 const API = "https://jsonplaceholder.typicode.com/posts";
 
-const PostsPage = () => {
+const PostPage = () => {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(true);
+
+  const context = useContext(AuthContext);
 
   let keysPosts = [];
 
@@ -65,6 +68,7 @@ const PostsPage = () => {
   ) : (
     <>
       <h3>{queryKey ? `Posts were sorted by ${queryKey}` : 'No queryKey'}</h3>
+      <h5>{`${context.user}`}: {`${context.isLoggedIn}`}</h5>
       <select
         onChange={(e) => setSortedposts(onSortPosts(posts, e.target.value))}
       >
@@ -79,4 +83,4 @@ const PostsPage = () => {
   );
 };
 
-export default PostsPage;
+export default PostPage;
