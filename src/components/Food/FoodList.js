@@ -32,7 +32,7 @@ const DUMMY_MEALS = [
 ];
 
 const FoodList = (props) => {
-  const meals = DUMMY_MEALS.map((meal) => <FoodOne {...meal} />);
+  const meals = DUMMY_MEALS.map((meal) => <FoodOne key={meal.id} {...meal} />);
   return (
     <section className={styles.meals}>
       <Card>
