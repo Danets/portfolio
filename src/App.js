@@ -5,15 +5,28 @@ import Login from "./pages/signin/Login";
 import PostPage from "./pages/posts/PostPage";
 import TaskPage from "./pages/tasks/TaskPage";
 import Food from "./components/Food/Food";
+import Cart from "./components/Cart/Cart";
 import { PostDetail } from "./components/post/PostDetail";
 import { AuthContext } from "./context/AuthContext";
+import { useState } from "react";
 
 function App() {
+  const [isModalOpen, setModalState] = useState(false);
+
+  const openModalHandle = () => {
+    setModalState(true);
+  };
+
+  const closeModalHandle = () => {
+    setModalState(false);
+  };
+
   return (
     <BrowserRouter>
       <AuthContext.Provider value={{ user: "Garry", isLoggedIn: true }}>
         <div className="App">
-          <Header />
+          {isModalOpen && <Cart onCloseModal={closeModalHandle} />}
+          <Header onOpenModal={openModalHandle} />
           <main>
             <Outlet />
           </main>

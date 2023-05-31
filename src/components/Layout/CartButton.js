@@ -3,7 +3,7 @@ import CartIcon from "../Cart/CartIcon";
 
 const CartButton = (props) => {
   return (
-    <button className={styles.button}>
+    <button onClick={props.onOpenModal} className={styles.button}>
       <span className={styles.icon}>
         <CartIcon />
       </span>
