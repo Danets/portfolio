@@ -7,11 +7,28 @@ const initialState = {
 };
 
 const cartReducer = (state, action) => {
+  const currIdxMeal = state.meals.findIndex(meal => meal.id === action.meal.id);
+  const currMeal = state.meals[currIdxMeal];
+  let updatedMeal;
+  let updatedMeals;
+  
+  if (currMeal) {
+    updatedMeal = {
+      ...currMeal,
+      amount: currMeal.amount + action.meal.amount
+    }
+
+    updatedMeals = [...state.meals];
+    updatedMeals[currIdxMeal] = updatedMeal
+  } else {
+    updatedMeals = [...state.meals, action.meal]
+  }
+
   switch (action.type) {
     case "ADD_MEAL":
       return {
         ...state,
-        meals: [...state.meals, action.meal],
+        meals: updatedMeals,
         totalAmount: state.totalAmount + action.meal.amount * action.meal.price
       };
 

@@ -7,7 +7,7 @@ import TaskPage from "./pages/tasks/TaskPage";
 import Food from "./components/Food/Food";
 import Cart from "./components/Cart/Cart";
 import { PostDetail } from "./components/post/PostDetail";
-import { AuthContext } from "./context/AuthContext";
+import CartContextProvider from "./context/CartContextProvider";
 import { useState } from "react";
 
 function App() {
@@ -23,7 +23,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <AuthContext.Provider value={{ user: "Garry", isLoggedIn: true }}>
+      <CartContextProvider>
         <div className="App">
           {isModalOpen && <Cart onCloseModal={closeModalHandle} />}
           <Header onOpenModal={openModalHandle} />
@@ -40,7 +40,7 @@ function App() {
             <Route path="*" element={<h1>Not found</h1>} />
           </Routes>
         </div>
-      </AuthContext.Provider>
+      </CartContextProvider>
     </BrowserRouter>
   );
 }
