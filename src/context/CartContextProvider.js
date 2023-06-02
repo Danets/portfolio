@@ -7,35 +7,51 @@ const initialState = {
 };
 
 const cartReducer = (state, action) => {
-  const currIdxMeal = state.meals.findIndex(meal => meal.id === action.meal.id);
-  const currMeal = state.meals[currIdxMeal];
-  let updatedMeal;
-  let updatedMeals;
-  
-  if (currMeal) {
-    updatedMeal = {
-      ...currMeal,
-      amount: currMeal.amount + action.meal.amount
-    }
-
-    updatedMeals = [...state.meals];
-    updatedMeals[currIdxMeal] = updatedMeal
-  } else {
-    updatedMeals = [...state.meals, action.meal]
-  }
-
   switch (action.type) {
     case "ADD_MEAL":
+      const currIdxMeal = state.meals.findIndex(
+        (meal) => meal.id === action.meal.id
+      );
+      const currMeal = state.meals[currIdxMeal];
+      let updatedMeal;
+      let updatedMeals;
+
+      if (currMeal) {
+        updatedMeal = {
+          ...currMeal,
+          amount: currMeal.amount + action.meal.amount,
+        };
+        updatedMeals = [...state.meals];
+        updatedMeals[currIdxMeal] = updatedMeal;
+      } else {
+        updatedMeals = [...state.meals, action.meal];
+      }
       return {
-        ...state,
         meals: updatedMeals,
-        totalAmount: state.totalAmount + action.meal.amount * action.meal.price
+        totalAmount: state.totalAmount + action.meal.amount * action.meal.price,
       };
 
     case "REMOVE_MEAL":
+      const idxMeal = state.meals.findIndex(
+        (meal) => meal.id === action.id
+      );
+      const meal = state.meals[idxMeal];
+      let updateMeal;
+      let updateMeals;
+      if (meal.amount === 1) {
+        updateMeals = state.meals.filter((meal) => meal.id !== action.id);
+      } else {
+        updateMeal = {
+          ...meal,
+          amount: meal.amount - 1,
+        };
+        updateMeals = [...state.meals];
+        updateMeals[idxMeal] = updateMeal;
+      }
+
       return {
-        ...state,
-        meals: state.meals.filter((meal) => meal.id !== action.id),
+        meals: updateMeals,
+        totalAmount: state.totalAmount - meal.price
       };
 
     default:
