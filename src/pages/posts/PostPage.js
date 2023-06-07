@@ -1,21 +1,18 @@
 import queryString from "query-string";
 
 import { useLocation, useNavigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import useFetch from "../../hooks/useFetch";
+
 import Post from "../../components/post/Post";
-import {AuthContext} from "../../context/AuthContext";
 
 const API = "https://jsonplaceholder.typicode.com/posts";
 
 const PostPage = () => {
   const [posts, setPosts] = useState([]);
-  const [error, setError] = useState("");
-  const [isLoading, setLoading] = useState(true);
 
-  const context = useContext(AuthContext);
-
+  // OPTONS FOR SELECT
   let keysPosts = [];
-
   if (posts.length) {
     keysPosts = Object.keys(posts[0]);
   }
@@ -37,27 +34,21 @@ const PostPage = () => {
   const [queryKey, setKey] = useState(query.sort);
   const [sortedposts, setSortedposts] = useState(onSortPosts(posts, queryKey));
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await fetch(API);
-        const posts = await response.json();
-        setPosts(posts);
-        setSortedposts(onSortPosts(posts, posts[0].id))
-      } catch (error) {
-        setError(error.message);
-      }
-      setLoading(false);
-    })();
-  }, []);
+  const setSortedArr = (posts) => {
+    setPosts(posts);
+    setSortedposts(onSortPosts(posts, posts[0].id));
+  };
+
+  const { error, isLoading, fetchData } = useFetch({ api: API }, setSortedArr);
 
   useEffect(() => {
+    fetchData();
     if (!keysPosts.includes(queryKey)) {
       navigate("/posts");
       setKey();
       setSortedposts([...posts]);
     }
-  }, [queryKey, navigate]);
+  }, [queryKey, navigate, fetchData]);
 
   if (error) {
     return <h2>{error}</h2>;
@@ -67,8 +58,7 @@ const PostPage = () => {
     <h2>Loading...</h2>
   ) : (
     <>
-      <h3>{queryKey ? `Posts were sorted by ${queryKey}` : 'No queryKey'}</h3>
-      <h5>{`${context.user}`}: {`${context.isLoggedIn}`}</h5>
+      <h3>{queryKey ? `Posts were sorted by ${queryKey}` : "No queryKey"}</h3>
       <select
         onChange={(e) => setSortedposts(onSortPosts(posts, e.target.value))}
       >
@@ -78,7 +68,9 @@ const PostPage = () => {
           </option>
         ))}
       </select>
-      {sortedposts.map((post) => <Post key={post.id} {...post} />)}
+      {sortedposts.map((post) => (
+        <Post key={post.id} {...post} />
+      ))}
     </>
   );
 };
