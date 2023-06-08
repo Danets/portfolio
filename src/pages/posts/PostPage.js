@@ -43,12 +43,15 @@ const PostPage = () => {
 
   useEffect(() => {
     fetchData();
+  }, []);
+
+  useEffect(() => {
     if (!keysPosts.includes(queryKey)) {
       navigate("/posts");
       setKey();
       setSortedposts([...posts]);
     }
-  }, [queryKey, navigate, fetchData]);
+  }, [queryKey, navigate, posts]);
 
   if (error) {
     return <h2>{error}</h2>;
