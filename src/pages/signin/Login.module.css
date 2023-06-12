@@ -34,5 +34,14 @@ form {
   button:hover {
     opacity: 0.8;
   }
+
+  button:disabled {
+    opacity: 0.5;
+    cursor: none;
+  }
+
+  .form-control-error input {
+    border: 1px solid red;
+  }
  
  
