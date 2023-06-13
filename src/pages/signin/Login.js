@@ -1,17 +1,31 @@
-import { useState } from "react";
+import useValidateInput from "../../hooks/useValidateInput";
 import styles from "./Login.module.css";
 
 const Login = () => {
-  const [data, setFormdata] = useState({ username: "", password: "" });
-  const [isTouchedUsername, setTouchUsername] = useState(false);
-  const [isTouchedPassword, setTouchPassword] = useState(false);
-  const isUsernameValid = data.username.trim() !== "";
-  const isPasswordValid = data.password.trim() !== "";
-  const isUsernameInvalid = !isUsernameValid && isTouchedUsername;
-  const isPassswordInValid = !isPasswordValid && isTouchedPassword;
+  const {
+    value: username,
+    isInputValid: isUsernameValid,
+    isInputInvalid: isUsernameInvalid,
+    handleInputFocus: handleUsernameFocus,
+    handleChangeInput: handleChangeUsername,
+    resetValues: resetUsername
+  } = useValidateInput((val) => val.trim() !== '');
 
-  const classErrorName = isUsernameInvalid ? `${styles['form-control-error']}` : '';
-  const classErrorPass = isPassswordInValid ? `${styles['form-control-error']}` : '';
+  const {
+    value: password,
+    isInputValid: isPasswordValid,
+    isInputInvalid: isPassswordInValid,
+    handleInputFocus: handlePasswordFocus,
+    handleChangeInput: handleChangePassword,
+    resetValues: resetPassword
+  } = useValidateInput((val) => val.length > 8);
+
+  const classErrorName = isUsernameInvalid
+    ? `${styles["form-control-error"]}`
+    : "";
+  const classErrorPass = isPassswordInValid
+    ? `${styles["form-control-error"]}`
+    : "";
 
   let isFormValid = false;
 
@@ -19,32 +33,13 @@ const Login = () => {
     isFormValid = true;
   }
 
-  const handleUsernameFocus = () => {
-    setTouchUsername(true);
-  };
-
-  const handlePasswwordFocus = () => {
-    setTouchPassword(true);
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
-    setTouchUsername(true);
-    setTouchPassword(true);
-    if (!isUsernameValid && !isPasswordValid) return;
-    setFormdata({
-      username: "",
-      password: "",
-    });
-    setTouchUsername(false);
-    setTouchPassword(false);
-  };
-
-  const handleChangeInput = (event, name) => {
-    setFormdata((prevstate) => ({
-      ...prevstate,
-      [name]: event.target.value,
-    }));
+    if (!isFormValid) return;
+    const data = {username, password };
+    console.log('Data: ', data)
+    resetUsername();
+    resetPassword();
   };
 
   return (
@@ -56,8 +51,9 @@ const Login = () => {
             type="text"
             placeholder="Enter Username"
             required
-            value={data.username}
-            onChange={(e) => handleChangeInput(e, "username")}
+            name="username"
+            value={username}
+            onChange={handleChangeUsername}
             onBlur={handleUsernameFocus}
           />
           {isUsernameInvalid && <div>Put name</div>}
@@ -68,9 +64,10 @@ const Login = () => {
             type="password"
             placeholder="Enter Password"
             required
-            value={data.password}
-            onChange={(e) => handleChangeInput(e, "password")}
-            onBlur={handlePasswwordFocus}
+            name="password"
+            value={password}
+            onChange={handleChangePassword}
+            onBlur={handlePasswordFocus}
           />
           {isPassswordInValid && <div>Put Password</div>}
         </div>
