@@ -8,6 +8,7 @@ const Navigation = () => {
     { title: "Tasks", to: "/tasks" },
     { title: "Posts", to: "/posts" },
     { title: "Login", to: "/login" },
+    { title: "Signup", to: "/signup" }
   ];
  
   return (

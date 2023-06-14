@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Layout/Header";
 import Login from "./pages/signin/Login";
+import Signup from "./pages/signup/Signup";
 import PostPage from "./pages/posts/PostPage";
 import TaskPage from "./pages/tasks/TaskPage";
 import Food from "./components/Food/Food";
@@ -37,6 +38,7 @@ function App() {
             <Route path="/posts" element={<PostPage />} />
             <Route path="/posts/:id" element={<PostDetail />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="*" element={<h1>Not found</h1>} />
           </Routes>
         </div>
