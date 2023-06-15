@@ -32,8 +32,9 @@ const Signup = () => {
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
+      validateOnMount
     >
-      {({ isSubmitting }) => (
+      {({ isValid, isSubmitting }) => (
         <Form>
           <label htmlFor="firstName">First Name</label>
           <Field name="firstName" type="text" id="firstName" />
@@ -59,7 +60,7 @@ const Signup = () => {
             {(msg) => <div className={styles["text-error"]}>{msg}</div>}
           </ErrorMessage>
 
-          <button type="submit" disabled={isSubmitting}>
+          <button type="submit" disabled={!isValid || isSubmitting}>
             Sign Up
           </button>
         </Form>
