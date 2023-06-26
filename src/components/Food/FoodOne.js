@@ -2,10 +2,13 @@ import styles from "./FoodOne.module.css";
 import FoodForm from "./FoodForm";
 import { CartContext } from "../../context/CartContext";
 import { useContext } from "react";
+import { useDispatch } from "react-redux";
+import { addMeal } from "../../store/cartSlice";
 
 const FoodOne = (props) => {
   const formatedPrice = `$${props.price.toFixed(2)}`;
   const cartContext = useContext(CartContext);
+  const dispatch = useDispatch();
 
   const addMealCart = (amountInput) => {
     const meal = {
@@ -15,7 +18,8 @@ const FoodOne = (props) => {
       description: props.description,
       amount: amountInput
     };
-    cartContext.addMeal(meal);
+    // cartContext.addMeal(meal);
+    dispatch(addMeal(meal))
   };
 
   return (

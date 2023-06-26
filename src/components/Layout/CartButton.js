@@ -2,14 +2,17 @@ import styles from "./CartButton.module.css";
 import CartIcon from "../Cart/CartIcon";
 import { CartContext } from "../../context/CartContext";
 import { useContext, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+
 
 const CartButton = (props) => {
   const cartContext = useContext(CartContext);
+  const cart = useSelector(state => state.cart);
   const [isCartChanged, setCartChanged] = useState(false);
 
   const animatedBadge = `${styles.button} ${isCartChanged ? styles.bump : ''}`
 
-  const quantityMeals = cartContext.meals.reduce((acc, next) => {
+  const quantityMeals = cart.meals.reduce((acc, next) => {
     return acc + next.amount;
   }, 0);
 
