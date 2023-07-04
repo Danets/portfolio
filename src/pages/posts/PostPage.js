@@ -2,19 +2,24 @@ import queryString from "query-string";
 
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import useFetch from "../../hooks/useFetch";
+import { useDispatch, useSelector } from "react-redux";
+import { getPostsAsync } from "../../store/postSlice";
 
 import Post from "../../components/post/Post";
 
-const API = "https://jsonplaceholder.typicode.com/posts";
 
 const PostPage = () => {
   const [posts, setPosts] = useState([]);
 
+  const dispatch = useDispatch();
+  const entities = useSelector(state => state.post.entities);
+  const isLoading = useSelector(state => state.post.loading);
+  const error = useSelector(state => state.post.error);
+
   // OPTONS FOR SELECT
   let keysPosts = [];
   if (posts.length) {
-    keysPosts = Object.keys(posts[0]);
+    keysPosts = Object.keys(posts[1]);
   }
 
   const location = useLocation();
@@ -36,20 +41,19 @@ const PostPage = () => {
 
   const setSortedArr = (posts) => {
     setPosts(posts);
-    setSortedposts(onSortPosts(posts, posts[0].id));
+    setSortedposts(onSortPosts(posts, posts[0]?.id));
   };
 
-  const { error, isLoading, fetchData } = useFetch({ api: API }, setSortedArr);
-
   useEffect(() => {
-    fetchData();
+    dispatch(getPostsAsync());
+    setSortedArr(entities);
   }, []);
 
   useEffect(() => {
     if (!keysPosts.includes(queryKey)) {
       navigate("/posts");
       setKey();
-      setSortedposts([...posts]);
+      setSortedposts([...entities]);
     }
   }, [queryKey, navigate, posts]);
 
@@ -71,8 +75,8 @@ const PostPage = () => {
           </option>
         ))}
       </select>
-      {sortedposts.map((post) => (
-        <Post key={post.id} {...post} />
+      {sortedposts.map((post, idx) => (
+        <Post key={idx} {...post} />
       ))}
     </>
   );
