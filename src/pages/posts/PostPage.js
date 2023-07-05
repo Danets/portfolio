@@ -1,25 +1,23 @@
-import queryString from "query-string";
-
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import queryString from "query-string";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import { getPostsAsync } from "../../store/postSlice";
-
 import Post from "../../components/post/Post";
-
 
 const PostPage = () => {
   const [posts, setPosts] = useState([]);
 
   const dispatch = useDispatch();
-  const entities = useSelector(state => state.post.entities);
-  const isLoading = useSelector(state => state.post.loading);
-  const error = useSelector(state => state.post.error);
+  const { entities, isLoading, error } = useSelector((state) => state.post);
 
   // OPTONS FOR SELECT
   let keysPosts = [];
   if (posts.length) {
-    keysPosts = Object.keys(posts[1]);
+    keysPosts = Object.keys(posts[0]);
   }
 
   const location = useLocation();
@@ -40,44 +38,58 @@ const PostPage = () => {
   const [sortedposts, setSortedposts] = useState(onSortPosts(posts, queryKey));
 
   const setSortedArr = (posts) => {
-    setPosts(posts);
-    setSortedposts(onSortPosts(posts, posts[0]?.id));
+    if (posts) {
+      setPosts(posts);
+      setSortedposts(onSortPosts(posts, posts[0]?.userId));
+    }
   };
 
+  const onChangeHandler = (e) => {
+    setSortedposts(onSortPosts(posts, e.target.value));
+  };
+
+  const onChangeHandlerMemo = useMemo(() => onChangeHandler, [posts]);
+
+  const onChangeHandlerWithCallback = useCallback(onChangeHandler, [posts]);
+
   useEffect(() => {
-    dispatch(getPostsAsync());
+    dispatch(getPostsAsync())
+      .unwrap()
+      .then(() => toast("Posts Loaded!"))
+      .catch((err) => toast(err));
     setSortedArr(entities);
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!keysPosts.includes(queryKey)) {
       navigate("/posts");
       setKey();
-      setSortedposts([...entities]);
+      setSortedposts([...posts]);
     }
   }, [queryKey, navigate, posts]);
 
-  if (error) {
-    return <h2>{error}</h2>;
-  }
-
-  return isLoading ? (
-    <h2>Loading...</h2>
-  ) : (
+  return (
     <>
-      <h3>{queryKey ? `Posts were sorted by ${queryKey}` : "No queryKey"}</h3>
-      <select
-        onChange={(e) => setSortedposts(onSortPosts(posts, e.target.value))}
-      >
-        {keysPosts.map((prop, idx) => (
-          <option key={idx} value={prop}>
-            {prop}
-          </option>
-        ))}
-      </select>
-      {sortedposts.map((post, idx) => (
-        <Post key={idx} {...post} />
-      ))}
+      <ToastContainer />
+      {error && <h2>{error}</h2>}
+      {isLoading && <h2>Loading...</h2>}
+      {!isLoading && !error && (
+        <>
+          <h3>
+            {queryKey ? `Posts were sorted by ${queryKey}` : "No queryKey"}
+          </h3>
+          <select onChange={onChangeHandlerMemo}>
+            {keysPosts.map((prop, idx) => (
+              <option key={idx} value={prop}>
+                {prop}
+              </option>
+            ))}
+          </select>
+          {sortedposts.map((post, idx) => (
+            <Post key={idx} {...post} />
+          ))}
+        </>
+      )}
     </>
   );
 };
