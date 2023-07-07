@@ -1,3 +1,5 @@
+import { useState } from "react";
+import CartContextProvider from "./context/CartContextProvider";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Layout/Header";
@@ -8,8 +10,6 @@ import TaskPage from "./pages/tasks/TaskPage";
 import Food from "./components/Food/Food";
 import Cart from "./components/Cart/Cart";
 import { PostDetail } from "./components/post/PostDetail";
-import CartContextProvider from "./context/CartContextProvider";
-import { useState } from "react";
 
 function App() {
   const [isModalOpen, setModalState] = useState(false);

@@ -63,6 +63,7 @@ const PostPage = () => {
         toast("Posts Loaded!")}
         )
       .catch((err) => toast(err));
+    setSortedArr(entities);
   }, [dispatch]);
 
   useEffect(() => {
