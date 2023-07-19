@@ -3,7 +3,7 @@ import styles from "./Navigation.module.css";
 
 const Navigation = () => {
   const links = [
-    { title: "Home", to: "/" },
+    { title: "Home", to: "/", exact: true },
     { title: "Food", to: "/food" },
     { title: "Tasks", to: "/tasks" },
     { title: "Posts", to: "/posts" },
@@ -17,6 +17,7 @@ const Navigation = () => {
         <NavLink
           key={idx}
           to={link.to}
+          exact={link.exact}
         >
           {link.title}
         </NavLink>

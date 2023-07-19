@@ -82,12 +82,10 @@ const Header = ({ onOpenModal }) => {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography variant="h6" noWrap component="div">
                 <div className={styles.wrapper}>
                   <Navigation />
                   <CartButton onOpenModal={onOpenModal} />
                 </div>
-              </Typography>
             </Toolbar>
           </AppBar>
           <Drawer
