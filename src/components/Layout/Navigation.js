@@ -3,7 +3,7 @@ import styles from "./Navigation.module.css";
 
 const Navigation = () => {
   const links = [
-    { title: "Home", to: "/", exact: true },
+    { title: "Home", to: "/" },
     { title: "Food", to: "/food" },
     { title: "Tasks", to: "/tasks" },
     { title: "Posts", to: "/posts" },

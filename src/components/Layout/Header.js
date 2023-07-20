@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -6,7 +6,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -21,6 +20,10 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import { useTheme } from "@mui/material/styles";
+import { ColorModeContext } from "../../App";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
 
 import styles from "./Header.module.css";
 import Navigation from "./Navigation";
@@ -58,6 +61,9 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const Header = ({ onOpenModal }) => {
   const [open, setOpen] = useState(false);
 
+  const theme = useTheme();
+  const colorMode = useContext(ColorModeContext);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -68,76 +74,93 @@ const Header = ({ onOpenModal }) => {
 
   return (
     <>
-        <Box sx={{ display: "flex" }}>
-          <CssBaseline />
-          <AppBar position="fixed" open={open}>
-            <Toolbar>
+      <Box
+        sx={{
+          display: "flex",
+          bgcolor: "background.default",
+          color: "text.primary",
+        }}
+      >
+        <CssBaseline />
+        <AppBar position="fixed" open={open}>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              className={styles.btn}
+              edge="start"
+              sx={{ mr: 2, ...(open && { display: "none" }) }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <div className={styles.wrapper}>
+              <Navigation />
+              <CartButton onOpenModal={onOpenModal} />
               <IconButton
+                sx={{ ml: 1 }}
+                onClick={colorMode.toggleColorMode}
                 color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                className={styles.btn}
-                edge="start"
-                sx={{ mr: 2, ...(open && { display: "none" }) }}
               >
-                <MenuIcon />
+                {theme.palette.mode === "dark" ? (
+                  <Brightness7Icon />
+                ) : (
+                  <Brightness4Icon />
+                )}
               </IconButton>
-                <div className={styles.wrapper}>
-                  <Navigation />
-                  <CartButton onOpenModal={onOpenModal} />
-                </div>
-            </Toolbar>
-          </AppBar>
-          <Drawer
-            sx={{
+            </div>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          sx={{
+            width: drawerWidth,
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
               width: drawerWidth,
-              flexShrink: 0,
-              "& .MuiDrawer-paper": {
-                width: drawerWidth,
-                boxSizing: "border-box",
-              },
-            }}
-            variant="persistent"
-            anchor="left"
-            open={open}
-          >
-            <DrawerHeader>
-              <IconButton onClick={handleDrawerClose}>
-                <CloseIcon />
-              </IconButton>
-            </DrawerHeader>
-            <Divider />
-            <List>
-              {["Home", "Food", "Tasks", "Posts"].map((text, index) => (
-                <ListItem key={text} disablePadding>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      {index === 0 ? <HouseIcon /> : ""}
-                      {index === 1 ? <FoodBankIcon /> : ""}
-                      {index === 2 ? <TaskIcon /> : ""}
-                      {index === 3 ? <PostAddIcon /> : ""}
-                    </ListItemIcon>
-                    <ListItemText primary={text} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-            <Divider />
-            <List>
-              {["Login", "Signup"].map((text, index) => (
-                <ListItem key={text} disablePadding>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      {index === 0 ? <LoginIcon /> : ""}
-                      {index === 1 ? <HowToRegIcon /> : ""}
-                    </ListItemIcon>
-                    <ListItemText primary={text} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </Drawer>
-        </Box>
+              boxSizing: "border-box",
+            },
+          }}
+          variant="persistent"
+          anchor="left"
+          open={open}
+        >
+          <DrawerHeader>
+            <IconButton onClick={handleDrawerClose}>
+              <CloseIcon />
+            </IconButton>
+          </DrawerHeader>
+          <Divider />
+          <List>
+            {["Home", "Food", "Tasks", "Posts"].map((text, index) => (
+              <ListItem key={text} disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    {index === 0 ? <HouseIcon /> : ""}
+                    {index === 1 ? <FoodBankIcon /> : ""}
+                    {index === 2 ? <TaskIcon /> : ""}
+                    {index === 3 ? <PostAddIcon /> : ""}
+                  </ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+          <Divider />
+          <List>
+            {["Login", "Signup"].map((text, index) => (
+              <ListItem key={text} disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    {index === 0 ? <LoginIcon /> : ""}
+                    {index === 1 ? <HowToRegIcon /> : ""}
+                  </ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
+      </Box>
       <div className={styles["main-image"]}>
         <img src={sushiImg} alt="Sushi" />
       </div>
