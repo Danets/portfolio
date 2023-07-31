@@ -3,11 +3,11 @@ import styles from "./Login.module.css";
 
 const Login = () => {
   const {
-    value: username,
-    isInputValid: isUsernameValid,
-    isInputInvalid: isUsernameInvalid,
-    handleInputFocus: handleUsernameFocus,
-    handleChangeInput: handleChangeUsername,
+    value:     email,
+    isInputValid: isEmailValid,
+    isInputInvalid: isEmailInvalid,
+    handleInputFocus: handleEmailFocus,
+    handleChangeInput: handleChangeEmail,
     resetValues: resetUsername
   } = useValidateInput((val) => val.trim() !== '');
 
@@ -20,7 +20,7 @@ const Login = () => {
     resetValues: resetPassword
   } = useValidateInput((val) => val.length > 8);
 
-  const classErrorName = isUsernameInvalid
+  const classErrorName = isEmailValid
     ? `${styles["form-control-error"]}`
     : "";
   const classErrorPass = isPassswordInValid
@@ -29,15 +29,14 @@ const Login = () => {
 
   let isFormValid = false;
 
-  if (isUsernameValid && isPasswordValid) {
+  if (isEmailValid && isPasswordValid) {
     isFormValid = true;
   }
 
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!isFormValid) return;
-    const data = {username, password };
-    console.log('Data: ', data)
+    const data = {email, password };
     resetUsername();
     resetPassword();
   };
@@ -49,14 +48,14 @@ const Login = () => {
         <div className={classErrorName}>
           <input
             type="text"
-            placeholder="Enter Username"
+            placeholder="Enter Email"
             required
-            name="username"
-            value={username}
-            onChange={handleChangeUsername}
-            onBlur={handleUsernameFocus}
+            name="email"
+            value={email}
+            onChange={handleChangeEmail}
+            onBlur={handleEmailFocus}
           />
-          {isUsernameInvalid && <div>Put name</div>}
+          {isEmailInvalid && <div>Put Email</div>}
         </div>
 
         <div className={classErrorPass}>
