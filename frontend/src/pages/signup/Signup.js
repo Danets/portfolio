@@ -2,12 +2,33 @@ import styles from "./Signup.module.css";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRegisterMutation } from '../../store/usersApiSlice';
+import { setCredentials } from '../../store/authSlice';
+import { toast } from 'react-toastify';
+
 const Signup = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [register, { isLoading }] = useRegisterMutation();
+
+  const { userInfo } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate('/');
+    }
+  }, [navigate, userInfo]);
+
   const initialValues = {
     firstName: "",
     lastName: "",
     email: "",
     password: "",
+    // confirmPassword: "",
   };
 
   const validationSchema = Yup.object({
@@ -18,13 +39,22 @@ const Signup = () => {
       .min(4, "Too Short!")
       .max(8, "Too Long!")
       .required("Required"),
+    // confirmPassword: Yup.string().required("Required")
   });
 
-  const handleSubmit = (values, { setSubmitting }) => {
-    setTimeout(() => {
-      alert(JSON.stringify(values, null, 2));
-      setSubmitting(false);
-    }, 400);
+  const handleSubmit = async (values, { setSubmitting }) => {
+    // setTimeout(() => {
+    //   alert(JSON.stringify(values, null, 2));
+    //   setSubmitting(false);
+    // }, 400);
+    
+      try {
+        const res = await register(values).unwrap();
+        dispatch(setCredentials({ ...res }));
+        navigate('/');
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
   };
 
   return (
@@ -59,6 +89,12 @@ const Signup = () => {
           <ErrorMessage name="password">
             {(msg) => <div className={styles["text-error"]}>{msg}</div>}
           </ErrorMessage>
+
+          {/* <label htmlFor="confirmPassword">Confirm Password</label>
+          <Field name="confirmPassword" type="password" id="confirmPassword" />
+          <ErrorMessage name="confirmPassword">
+            {(msg) => <div className={styles["text-error"]}>{msg}</div>}
+          </ErrorMessage> */}
 
           <button type="submit" disabled={!isValid || isSubmitting}>
             Sign Up

@@ -14,6 +14,8 @@ import { combineReducers } from "redux";
 
 import cartSlice from "./cartSlice";
 import postSlice from "./postSlice";
+import authSlice from "./authSlice";
+import { apiSlice } from './apiSlice';
 
 const persistConfig = {
   key: "root",
@@ -23,6 +25,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   cart: cartSlice,
   post: postSlice,
+  auth: authSlice
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -34,7 +37,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat(apiSlice.middleware),
 });
 
 export const persistor = persistStore(store);
