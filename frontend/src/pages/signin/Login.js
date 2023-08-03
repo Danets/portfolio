@@ -1,79 +1,84 @@
-import useValidateInput from "../../hooks/useValidateInput";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import styles from "./Login.module.css";
 
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useLoginMutation } from "../../store/usersApiSlice";
+import { setCredentials } from "../../store/authSlice";
+
 const Login = () => {
-  const {
-    value:     email,
-    isInputValid: isEmailValid,
-    isInputInvalid: isEmailInvalid,
-    handleInputFocus: handleEmailFocus,
-    handleChangeInput: handleChangeEmail,
-    resetValues: resetUsername
-  } = useValidateInput((val) => val.trim() !== '');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const {
-    value: password,
-    isInputValid: isPasswordValid,
-    isInputInvalid: isPassswordInValid,
-    handleInputFocus: handlePasswordFocus,
-    handleChangeInput: handleChangePassword,
-    resetValues: resetPassword
-  } = useValidateInput((val) => val.length > 8);
+  const [login, { isLoading }] = useLoginMutation();
 
-  const classErrorName = isEmailValid
-    ? `${styles["form-control-error"]}`
-    : "";
-  const classErrorPass = isPassswordInValid
-    ? `${styles["form-control-error"]}`
-    : "";
+  const { userInfo } = useSelector((state) => state.auth);
 
-  let isFormValid = false;
+  useEffect(() => {
+    if (userInfo) {
+      navigate("/");
+    }
+  }, [navigate, userInfo]);
 
-  if (isEmailValid && isPasswordValid) {
-    isFormValid = true;
-  }
+  const initialValues = {
+    email: "",
+    password: "",
+  };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (!isFormValid) return;
-    const data = {email, password };
-    resetUsername();
-    resetPassword();
+  const validationSchema = Yup.object({
+    email: Yup.string().email("Invalid email address").required("Required"),
+    password: Yup.string()
+      .min(4, "Too Short!")
+      .max(8, "Too Long!")
+      .required("Required"),
+  });
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+      try {
+        const res = await login(values).unwrap();
+        dispatch(setCredentials({ ...res }));
+        navigate("/");
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
   };
 
   return (
     <>
-      <h3>Login Form</h3>
-      <form onSubmit={handleSubmit}>
-        <div className={classErrorName}>
-          <input
-            type="text"
-            placeholder="Enter Email"
-            required
-            name="email"
-            value={email}
-            onChange={handleChangeEmail}
-            onBlur={handleEmailFocus}
-          />
-          {isEmailInvalid && <div>Put Email</div>}
-        </div>
+      {isLoading && <h2>Loading...</h2>}
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+        validateOnMount
+      >
+        {({ isValid, isSubmitting }) => (
+          <Form>
 
-        <div className={classErrorPass}>
-          <input
-            type="password"
-            placeholder="Enter Password"
-            required
-            name="password"
-            value={password}
-            onChange={handleChangePassword}
-            onBlur={handlePasswordFocus}
-          />
-          {isPassswordInValid && <div>Put Password</div>}
-        </div>
-        <button type="submit" disabled={!isFormValid}>
-          Login
-        </button>
-      </form>
+            <label htmlFor="email">Email Address</label>
+            <Field name="email" type="email" id="email" />
+            <ErrorMessage name="email">
+              {(msg) => <div className={styles["text-error"]}>{msg}</div>}
+            </ErrorMessage>
+
+            <label htmlFor="password">Password</label>
+            <Field name="password" type="password" id="password" />
+            <ErrorMessage name="password">
+              {(msg) => <div className={styles["text-error"]}>{msg}</div>}
+            </ErrorMessage>
+
+            <button type="submit" disabled={!isValid || isSubmitting}>
+              Sign In
+            </button>
+
+            <span>New User?</span> <Link to='/signup'>Register</Link>
+          </Form>
+        )}
+      </Formik>
     </>
   );
 };
