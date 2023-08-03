@@ -1,6 +1,7 @@
 import { useState, createContext, useMemo } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
 import "./App.css";
 import Header from "./components/Layout/Header";
 import Login from "./pages/signin/Login";
@@ -52,6 +53,7 @@ function App() {
             {isModalOpen && <Cart onCloseModal={closeModalHandle} />}
             <Header onOpenModal={openModalHandle} />
             <main>
+            <ToastContainer />
               <Outlet />
             </main>
             <Routes>
@@ -60,7 +62,7 @@ function App() {
               <Route path="/tasks" element={<TaskPage />} />
               <Route path="/posts" element={<PostPage />} />
               <Route path="/posts/:id" element={<PostDetail />} />
-              <Route path="/login" element={<Login />} />
+              <Route path="/signin" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="*" element={<h1>Not found</h1>} />
             </Routes>

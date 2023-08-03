@@ -1,4 +1,6 @@
 import { useState, useContext } from "react";
+import { useSelector } from "react-redux";
+
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -28,6 +30,7 @@ import Brightness7Icon from "@mui/icons-material/Brightness7";
 import styles from "./Header.module.css";
 import Navigation from "./Navigation";
 import CartButton from "./CartButton";
+import Profile from "./Profile";
 import sushiImg from "../../assets/sushi.jpg";
 
 const drawerWidth = 240;
@@ -72,6 +75,8 @@ const Header = ({ onOpenModal }) => {
     setOpen(false);
   };
 
+  const { userInfo } = useSelector((state) => state.auth);
+
   return (
     <>
       <Box
@@ -108,6 +113,7 @@ const Header = ({ onOpenModal }) => {
                   <Brightness4Icon />
                 )}
               </IconButton>
+              {userInfo && <Profile />}
             </div>
           </Toolbar>
         </AppBar>

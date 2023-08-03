@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import queryString from "query-string";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { getPostsAsync } from "../../store/postSlice";
@@ -76,7 +76,6 @@ const PostPage = () => {
 
   return (
     <>
-      <ToastContainer />
       {error && <h2>{error}</h2>}
       {isLoading && <h2>Loading...</h2>}
       {!isLoading && (
