@@ -17,7 +17,7 @@ import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 
-const Profile = () => {
+const UserMenu = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -34,13 +34,16 @@ const Profile = () => {
     setAnchorEl(null);
   };
 
-  const handleLogout = async (e) => {
-    // e.stopPropagation();
+  const handleEditProfile = () => {
+    navigate("/profile");
+};
+
+  const handleLogout = async () => {
     try {
       const res = await logoutAsync().unwrap();
       dispatch(logout());
       navigate("/");
-      toast(res.data.message);
+      toast.success(res.message);
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -60,8 +63,8 @@ const Profile = () => {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>
-              {userInfo.email.charAt(0)}
+            <Avatar sx={{ width: 40, height: 40 }}>
+              {`${userInfo?.firstName.charAt(0)}${userInfo?.lastName.charAt(0)}`}
             </Avatar>
           </IconButton>
         </Tooltip>
@@ -101,7 +104,7 @@ const Profile = () => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem>
+        <MenuItem onClick={handleEditProfile}>
           <Avatar /> Profile
         </MenuItem>
         <MenuItem>
@@ -131,4 +134,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default UserMenu;

@@ -10,6 +10,7 @@ import PostPage from "./pages/posts/PostPage";
 import TaskPage from "./pages/tasks/TaskPage";
 import Food from "./components/Food/Food";
 import Cart from "./components/Cart/Cart";
+import Profile from "./components/Profile/Profile";
 import { PostDetail } from "./components/post/PostDetail";
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
@@ -64,6 +65,7 @@ function App() {
               <Route path="/posts/:id" element={<PostDetail />} />
               <Route path="/signin" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="*" element={<h1>Not found</h1>} />
             </Routes>
           </div>

@@ -39,7 +39,7 @@ const signup = asyncHandler(async (req, res) => {
 // @route   POST /api/users/signin
 // @access  Public
 const signin = asyncHandler(async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { email, password } = req.body;
 
   const user = await User.findOne({ email });
 
@@ -47,8 +47,8 @@ const signin = asyncHandler(async (req, res) => {
     generateToken(res, user._id);
     res.json({
       _id: user._id,
-      firstName,
-      lastName,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email,
     });
   } else {

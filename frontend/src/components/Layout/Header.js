@@ -30,7 +30,7 @@ import Brightness7Icon from "@mui/icons-material/Brightness7";
 import styles from "./Header.module.css";
 import Navigation from "./Navigation";
 import CartButton from "./CartButton";
-import Profile from "./Profile";
+import UserMenu from "./UserMenu";
 import sushiImg from "../../assets/sushi.jpg";
 
 const drawerWidth = 240;
@@ -113,7 +113,7 @@ const Header = ({ onOpenModal }) => {
                   <Brightness4Icon />
                 )}
               </IconButton>
-              {userInfo && <Profile />}
+              {userInfo && <UserMenu />}
             </div>
           </Toolbar>
         </AppBar>
