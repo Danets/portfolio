@@ -1,7 +1,7 @@
 import { useState, createContext, useMemo } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
 import "./App.css";
 import Header from "./components/Layout/Header";
 import Login from "./pages/signin/Login";
@@ -11,6 +11,7 @@ import TaskPage from "./pages/tasks/TaskPage";
 import Food from "./components/Food/Food";
 import Cart from "./components/Cart/Cart";
 import Profile from "./components/Profile/Profile";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import { PostDetail } from "./components/post/PostDetail";
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
@@ -54,7 +55,7 @@ function App() {
             {isModalOpen && <Cart onCloseModal={closeModalHandle} />}
             <Header onOpenModal={openModalHandle} />
             <main>
-            <ToastContainer />
+              <ToastContainer />
               <Outlet />
             </main>
             <Routes>
@@ -65,7 +66,9 @@ function App() {
               <Route path="/posts/:id" element={<PostDetail />} />
               <Route path="/signin" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
-              <Route path="/profile" element={<Profile />} />
+              <Route path="" element={<PrivateRoute />}>
+                <Route path="/profile" element={<Profile />} />
+              </Route>
               <Route path="*" element={<h1>Not found</h1>} />
             </Routes>
           </div>
