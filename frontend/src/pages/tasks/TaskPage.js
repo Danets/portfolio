@@ -1,8 +1,8 @@
 import { v4 as uuid } from "uuid";
 import { useState } from "react";
 
-import TaskForm from "../../components/tasks/TaskForm";
-import TaskList from "../../components/tasks/TaskList";
+import TaskForm from "../../components/Task/TaskForm";
+import TaskList from "../../components/Task/TaskList";
 import Button from "../../components/ui/Button";
 import styles from "./TaskPage.module.css";
 

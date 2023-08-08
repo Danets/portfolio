@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { getPostsAsync } from "../../store/postSlice";
-import Post from "../../components/post/Post";
+import Post from "../../components/Post/Post";
 
 const PostPage = () => {
   const [posts, setPosts] = useState([]);

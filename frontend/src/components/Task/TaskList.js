@@ -1,4 +1,4 @@
-import Task from "../../components/tasks/Task";
+import Task from "./Task";
 
 const TaskList = ({ tasks, onRemove, toggleCompete }) => {
   return (

@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
 import Header from "./components/Layout/Header";
+import Footer from "./components/Layout/Footer";
 import Login from "./pages/signin/Login";
 import Signup from "./pages/signup/Signup";
 import PostPage from "./pages/posts/PostPage";
@@ -12,7 +13,7 @@ import Food from "./components/Food/Food";
 import Cart from "./components/Cart/Cart";
 import Profile from "./components/Profile/Profile";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
-import { PostDetail } from "./components/post/PostDetail";
+import { PostDetail } from "./components/Post/PostDetail";
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -52,26 +53,29 @@ function App() {
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <div className="App">
-            {isModalOpen && <Cart onCloseModal={closeModalHandle} />}
-            <Header onOpenModal={openModalHandle} />
-            <main>
-              <ToastContainer />
-              <Outlet />
-            </main>
-            <Routes>
-              <Route path="/" element={<h1>Home</h1>} />
-              <Route path="/food" element={<Food />} />
-              <Route path="/tasks" element={<TaskPage />} />
-              <Route path="/posts" element={<PostPage />} />
-              <Route path="/posts/:id" element={<PostDetail />} />
-              <Route path="/signin" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="" element={<PrivateRoute />}>
-                <Route path="/profile" element={<Profile />} />
-              </Route>
-              <Route path="*" element={<h1>Not found</h1>} />
-            </Routes>
+            <div className="inner-container">
+              {isModalOpen && <Cart onCloseModal={closeModalHandle} />}
+              <Header onOpenModal={openModalHandle} />
+              <main>
+                <ToastContainer />
+                <Outlet />
+                <Routes>
+                  <Route path="/" element={<h1>Home</h1>} />
+                  <Route path="/food" element={<Food />} />
+                  <Route path="/tasks" element={<TaskPage />} />
+                  <Route path="/posts" element={<PostPage />} />
+                  <Route path="/posts/:id" element={<PostDetail />} />
+                  <Route path="/signin" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="" element={<PrivateRoute />}>
+                    <Route path="/profile" element={<Profile />} />
+                  </Route>
+                  <Route path="*" element={<h1>Not found</h1>} />
+                </Routes>
+              </main>
+            </div>
           </div>
+          <Footer />
         </ThemeProvider>
       </ColorModeContext.Provider>
     </BrowserRouter>
