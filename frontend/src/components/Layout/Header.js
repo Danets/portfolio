@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
 
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -89,17 +90,16 @@ const Header = ({ onOpenModal }) => {
         <CssBaseline />
         <AppBar position="fixed" open={open}>
           <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              className={styles.btn}
-              edge="start"
-              sx={{ mr: 2, ...(open && { display: "none" }) }}
-            >
-              <MenuIcon />
-            </IconButton>
             <div className={styles.wrapper}>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                edge="start"
+                sx={{ mr: 2, ...(open && { display: "none" }) }}
+              >
+                <MenuIcon />
+              </IconButton>
               <Navigation />
               <CartButton onOpenModal={onOpenModal} />
               <IconButton
@@ -137,34 +137,45 @@ const Header = ({ onOpenModal }) => {
           </DrawerHeader>
           <Divider />
           <List>
-            {["Home", "Food", "Tasks", "Posts"].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
+            {[
+              { title: "Home", to: "/" },
+              { title: "Food", to: "/food" },
+              { title: "Tasks", to: "/tasks" },
+              { title: "Posts", to: "/posts" },
+            ].map((link, index) => (
+              <ListItem key={index} disablePadding>
+                <NavLink className={styles.link} key={index} to={link.to} exact={link.exact}>
                   <ListItemIcon>
                     {index === 0 ? <HouseIcon /> : ""}
                     {index === 1 ? <FoodBankIcon /> : ""}
                     {index === 2 ? <TaskIcon /> : ""}
                     {index === 3 ? <PostAddIcon /> : ""}
                   </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
+                  {link.title}
+                </NavLink>
               </ListItem>
             ))}
           </List>
           <Divider />
-          <List>
-            {["Login", "Signup"].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index === 0 ? <LoginIcon /> : ""}
-                    {index === 1 ? <HowToRegIcon /> : ""}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
+          {!userInfo && (
+            <List>
+              {[
+                { title: "Login", to: "/signin" },
+                { title: "Signup", to: "/signup" },
+              ].map((link, index) => (
+                <ListItem key={index} disablePadding>
+                  <NavLink className={styles.link} key={index} to={link.to} exact={link.exact}>
+                    <ListItemIcon>
+                      {index === 0 ? <LoginIcon /> : ""}
+                      {index === 1 ? <HowToRegIcon /> : ""}
+                    </ListItemIcon>
+                    {link.title}
+                  </NavLink>
+                </ListItem>
+              ))}
+            </List>
+          )}
+          {userInfo && <UserMenu />}
         </Drawer>
       </Box>
       <div className={styles["main-image"]}>

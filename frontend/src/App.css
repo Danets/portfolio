@@ -14,13 +14,11 @@
 
 label {
   font-weight: bold;
-  display: flex;
   margin-bottom: 5px;
 }
 
 input + label {
   font-weight: bold;
-  display: inline-flex;
   margin-right: 20px;
 }
 
@@ -29,9 +27,10 @@ input[type='email'],
 input[type='password'],
 textarea,
 select {
-  display: block;
+  display: flex;
   width: 400px;
   padding: 6px 12px;
+  margin: 10px 10px 10px auto;
   font-size: 14px;
   line-height: 1.42857143;
   color: #555;

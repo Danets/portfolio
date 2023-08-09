@@ -29,6 +29,8 @@
     align-items: center;
   }
 
-  .btn {
-    width: 10%;
+  .link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
   }

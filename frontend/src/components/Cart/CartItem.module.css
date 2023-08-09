@@ -26,9 +26,10 @@
   }
   
   .amount {
+    padding: 0.5rem 1rem;
+    color: black;
     font-weight: bold;
     border: 1px solid #ccc;
-    padding: 0.5rem 1rem;
     border-radius: 7px;
   }
   
@@ -56,6 +57,7 @@
     cursor: pointer;
     margin-left: 1rem;
     margin: 0.25rem;
+    padding: 0;
   }
   
   .cart-item button:hover,
