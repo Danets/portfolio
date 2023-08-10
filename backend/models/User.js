@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 
 const userSchema = mongoose.Schema(
   {
@@ -20,9 +20,20 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    roles: [
+      {
+        type: String,
+        default: "User",
+      },
+    ],
+    active: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,
+    versionKey: false
   }
 );
 
@@ -32,8 +43,8 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 };
 
 // Encrypt password using bcrypt
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
     next();
   }
 
