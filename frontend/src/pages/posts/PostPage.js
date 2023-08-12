@@ -6,14 +6,22 @@ import queryString from "query-string";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { getPostsAsync } from "../../store/postSlice";
+import {
+  useAddPostMutation,
+  useGetPostsMutation,
+  useGetPostByIdMutation,
+  useUpdatePostMutation,
+  useDeletePostMutation,
+} from "../../store/postApi";
 import Post from "../../components/Post/Post";
 
 const PostPage = () => {
   const [posts, setPosts] = useState([]);
 
   const dispatch = useDispatch();
-  const { entities, isLoading, error } = useSelector((state) => state.post);
+  const [getPosts, { isLoading }] = useGetPostsMutation();
+
+  // const { entities, isLoading, error } = useSelector((state) => state.post);
 
   // OPTONS FOR SELECT
   let keysPosts = [];
@@ -56,15 +64,16 @@ const PostPage = () => {
   const onChangeHandlerWithCallback = useCallback(onChangeHandler, [posts]);
 
   useEffect(() => {
-    dispatch(getPostsAsync())
-      .unwrap()
-      .then((res) => {
+    (async () => {
+      try {
+        const res = await getPosts().unwrap();
         setSortedArr(res);
-        toast("Posts Loaded!")}
-        )
-      .catch((err) => toast(err));
-    setSortedArr(entities);
-  }, [dispatch]);
+        toast("Posts Loaded!");
+      } catch (error) {
+        toast(error);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     if (!keysPosts.includes(queryKey)) {
@@ -76,7 +85,7 @@ const PostPage = () => {
 
   return (
     <>
-      {error && <h2>{error}</h2>}
+      {/* {error && <h2>{error}</h2>} */}
       {isLoading && <h2>Loading...</h2>}
       {!isLoading && (
         <>
