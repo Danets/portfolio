@@ -3,7 +3,7 @@ import { fetchBaseQuery, createApi } from '@reduxjs/toolkit/query/react';
 
 const POSTS_URL = "/api/posts";
 
-export const postApi = createApi({
+export const postApiSlice = createApi({
   reducerPath: 'postApi',
   baseQuery: fetchBaseQuery({ baseUrl: '' }),
   endpoints: (builder) => ({
@@ -21,8 +21,8 @@ export const postApi = createApi({
       }),
     }),
     getPostById: builder.mutation({
-      query: () => ({
-        url: `${POSTS_URL}/:id`,
+      query: (id) => ({
+        url: `${POSTS_URL}/${id}`,
         method: "GET",
       }),
     }),
@@ -34,8 +34,8 @@ export const postApi = createApi({
       }),
     }),
     deletePost: builder.mutation({
-      query: () => ({
-        url: `${POSTS_URL}/:id`,
+      query: (id) => ({
+        url: `${POSTS_URL}/${id}`,
         method: "DELETE",
       }),
     }),
@@ -48,7 +48,7 @@ export const {
   useGetPostByIdMutation,
   useUpdatePostMutation,
   useDeletePostMutation
-} = postApi;
+} = postApiSlice;
 
 // const initialState = {
 //   entities: [],

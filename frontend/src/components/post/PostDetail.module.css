@@ -1,0 +1,5 @@
+.container__btn {
+    display: flex;
+    justify-content: space-around;
+    width: 300px;
+}

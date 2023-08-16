@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 
 import queryString from "query-string";
 import { toast } from "react-toastify";
@@ -16,20 +15,14 @@ import * as Yup from "yup";
 import {
   useAddPostMutation,
   useGetPostsMutation,
-  useGetPostByIdMutation,
-  useUpdatePostMutation,
-  useDeletePostMutation,
-} from "../../store/postApi";
+} from "../../store/postApiSlice";
 import Post from "../../components/Post/Post";
 
 const PostPage = () => {
   const [posts, setPosts] = useState([]);
 
-  const dispatch = useDispatch();
   const [getPosts, { isLoading }] = useGetPostsMutation();
   const [addPost] = useAddPostMutation();
-
-  // const { entities, isLoading, error } = useSelector((state) => state.post);
 
   // OPTONS FOR SELECT
   let keysPosts = [];
@@ -71,7 +64,27 @@ const PostPage = () => {
 
   const onChangeHandlerMemo = useMemo(() => onChangeHandler, [posts]);
 
-  const onChangeHandlerWithCallback = useCallback(onChangeHandler, [posts]);
+  // const onChangeHandlerWithCallback = useCallback(onChangeHandler, [posts]);
+
+  const fetchPosts = async () => {
+    const res = await getPosts().unwrap();
+    const posts = res.map((post) => {
+      return {
+        ...post,
+        id: post._id,
+        createdAt: new Date(post.createdAt).toLocaleString("uk-UA", {
+          day: "numeric",
+          month: "long",
+        }),
+        updatedAt: new Date(post.updatedAt).toLocaleString("uk-UA", {
+          day: "numeric",
+          month: "long",
+        }),
+      };
+    });
+    setSortedArr(posts);
+    toast("Posts Loaded!");
+  };
 
   const [isEnableForm, setEnableForm] = useState(false);
   const enableAddingForm = () => setEnableForm(true);
@@ -88,11 +101,10 @@ const PostPage = () => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const res = await addPost(values).unwrap();
+      await addPost(values).unwrap();
+      fetchPosts();
       toast("Post was added!");
-      setPosts([...posts, res]);
       setEnableForm(false);
-      // navigate("/");
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -101,24 +113,9 @@ const PostPage = () => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await getPosts().unwrap();
-        const posts = res.map((post) => {
-          return {
-            ...post,
-            createdAt: new Date(post.createdAt).toLocaleString("uk-UA", {
-              day: "numeric",
-              month: "long",
-            }),
-            updatedAt: new Date(post.updatedAt).toLocaleString("uk-UA", {
-              day: "numeric",
-              month: "long",
-            }),
-          };
-        });
-        setSortedArr(posts);
-        toast("Posts Loaded!");
-      } catch (error) {
-        toast(error);
+        fetchPosts();
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
       }
     })();
   }, []);
@@ -145,7 +142,7 @@ const PostPage = () => {
             <Select
               labelId="sort-select"
               label="Sorting"
-              value={"title"}
+              // value={"title"}
               onChange={onChangeHandlerMemo}
             >
               {keysPosts.map((prop, idx) => (
@@ -158,10 +155,9 @@ const PostPage = () => {
           <Button variant="contained" onClick={enableAddingForm}>
             Add New Post
           </Button>
-          {!isEnableForm && sortedposts.map((post, idx) => (
-            <Post key={idx} {...post} />
-          ))}
-          {isEnableForm &&
+          {!isEnableForm &&
+            sortedposts.map((post, idx) => <Post key={idx} {...post} />)}
+          {isEnableForm && (
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
@@ -188,7 +184,7 @@ const PostPage = () => {
                 </Form>
               )}
             </Formik>
-          }
+          )}
         </>
       )}
     </>

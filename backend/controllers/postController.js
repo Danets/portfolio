@@ -51,10 +51,10 @@ const getPostById = asyncHandler(async (req, res) => {
 
 const updatePost = asyncHandler(async (req, res) => {
   const postId = req.params.id;
-  const { user, title, body, updated } = req.body;
+  const { user, title, body, updated, id } = req.body;
 
   const updatedPost = await Post.findByIdAndUpdate(
-    postId,
+    id,
     { user, title, body, updated: true },
     { new: true }
   );
@@ -70,13 +70,15 @@ const updatePost = asyncHandler(async (req, res) => {
 const deletePost = asyncHandler(async (req, res) => {
   const postId = req.params.id;
 
+  // const { id } = req.body;
+
   const deletedPost = await Post.findByIdAndDelete(postId);
 
   if (deletedPost) {
     res.status(200).json(deletedPost);
   } else {
     res.status(404);
-    throw new Error("Post not found");
+    throw new Error(`Post with ${postId} not found`);
   }
 });
 

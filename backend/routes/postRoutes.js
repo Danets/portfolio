@@ -10,7 +10,10 @@ import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.route("/").get(protect, getPosts).post(protect, addPost);
+router.route("/")
+.get(protect, getPosts)
+.post(protect, addPost)
+// .put(protect, updatePost)
 
 router
   .route("/:id")
