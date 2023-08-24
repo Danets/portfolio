@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import styles from "./PostDetail.module.css";
 
 import {
-  useGetPostByIdMutation,
+  useGetPostByIdQuery,
   useUpdatePostMutation,
   useDeletePostMutation,
 } from "../../store/postApiSlice";
@@ -19,26 +19,21 @@ import {
 export const PostDetail = () => {
   let { id } = useParams();
 
-  const [getPostById] = useGetPostByIdMutation();
+  const {
+    data: post,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetPostByIdQuery(id);
+
   const [updatePost] = useUpdatePostMutation();
   const [deletePost] = useDeletePostMutation();
 
   const navigate = useNavigate();
 
-  const [post, setPost] = useState();
   const [isEnableForm, setEnableForm] = useState(false);
   const enableEditingForm = () => setEnableForm(true);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const post = await getPostById(id).unwrap();
-        setPost(post);
-      } catch (error) {
-        toast(error);
-      }
-    })();
-  }, []);
 
   const onDeletePost = async () => {
     try {
@@ -71,6 +66,9 @@ export const PostDetail = () => {
       toast.error(err?.data?.message || err.error);
     }
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (!post) return <div>There is no post!</div>;
 
   return (
     <>

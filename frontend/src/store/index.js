@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+
 import {
   persistStore,
   persistReducer,
@@ -10,12 +11,14 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+
 import { combineReducers } from "redux";
 
 import cartSlice from "./cartSlice";
 import authSlice from "./authSlice";
+
+import { setupListeners } from '@reduxjs/toolkit/query'
 import { apiSlice } from "./apiSlice";
-import { postApiSlice } from "./postApiSlice";
 
 const persistConfig = {
   key: "root",
@@ -26,21 +29,20 @@ const rootReducer = combineReducers({
   cart: cartSlice,
   auth: authSlice,
   [apiSlice.reducerPath]: apiSlice.reducer,
-  [postApiSlice.reducerPath]: postApiSlice.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-const store = configureStore({
+export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(apiSlice.middleware, postApiSlice.middleware),
+    }).concat(apiSlice.middleware),
 });
 
 export const persistor = persistStore(store);
 
-export { store };
+setupListeners(store.dispatch);

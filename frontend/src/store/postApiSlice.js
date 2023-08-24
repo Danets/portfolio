@@ -1,105 +1,91 @@
-// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchBaseQuery, createApi } from '@reduxjs/toolkit/query/react';
+import { apiSlice } from "./apiSlice";
+import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
 
 const POSTS_URL = "/api/posts";
 
-export const postApiSlice = createApi({
-  reducerPath: 'postApi',
-  baseQuery: fetchBaseQuery({ baseUrl: '' }),
+const postsAdapter = createEntityAdapter();
+
+const initialState = postsAdapter.getInitialState();
+
+export const postApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    getPosts: builder.query({
+      query: () => `${POSTS_URL}`,
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
+      transformResponse: (responseData) => {
+        const loadedPosts = responseData.map((post) => {
+          post.id = post._id;
+          return post;
+        });
+        return postsAdapter.setAll(initialState, loadedPosts);
+      },
+      providesTags: (result, error, arg) => {
+        if (result?.ids) {
+          return [
+            { type: "Post", id: "LIST" },
+            ...result.ids.map((id) => ({ type: "Post", id })),
+          ];
+        } else return [{ type: "Post", id: "LIST" }];
+      },
+    }),
+
+    getPostById: builder.query({
+      query: (id) => `${POSTS_URL}/${id}`,
+      // providesTags: (result, error, id) => [{ type: "Post", id }],
+    }),
+
     addPost: builder.mutation({
       query: (data) => ({
         url: `${POSTS_URL}`,
         method: "POST",
         body: data,
       }),
+      invalidatesTags: [{ type: "Post", id: "LIST" }],
     }),
-    getPosts: builder.mutation({
-      query: () => ({
-        url: `${POSTS_URL}`,
-        method: "GET",
-      }),
-    }),
-    getPostById: builder.mutation({
-      query: (id) => ({
-        url: `${POSTS_URL}/${id}`,
-        method: "GET",
-      }),
-    }),
+
     updatePost: builder.mutation({
       query: (data) => ({
         url: `${POSTS_URL}/:id`,
         method: "PUT",
         body: data,
       }),
+      invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
     }),
+
     deletePost: builder.mutation({
       query: (id) => ({
         url: `${POSTS_URL}/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
     }),
   }),
 });
 
 export const {
+  useGetPostsQuery,
+  useGetPostByIdQuery,
   useAddPostMutation,
-  useGetPostsMutation,
-  useGetPostByIdMutation,
   useUpdatePostMutation,
-  useDeletePostMutation
+  useDeletePostMutation,
 } = postApiSlice;
 
-// const initialState = {
-//   entities: [],
-//   isLoading: false,
-//   error: null,
-// };
+export const selectPostsResult = postApiSlice.endpoints.getPosts.select();
 
-// export const postSlice = createSlice({
-//   name: "post",
-//   initialState,
-//   reducers: {},
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(getPostsAsync.pending, (state) => {
-//         state.isLoading = true;
-//         state.error = null;
-//       })
-//       .addCase(getPostsAsync.fulfilled, (state, action) => {
-//         state.entities = action.payload;
-//       })
-//       .addCase(getPostsAsync.rejected, (state, action) => {
-//         state.error = action.payload || action.error.message;
-//       })
-//       .addMatcher(
-//         (action) => action.type.endsWith("/fulfilled"),
-//         (state) => {
-//           state.isLoading = false;
-//         }
-//       )
-//       .addMatcher(
-//         (action) => action.type.endsWith("/rejected"),
-//         (state) => {
-//           state.isLoading = false;
-//         }
-//       );
-//   },
-// });
+// creates memoized selector
+const selectPostsData = createSelector(
+  selectPostsResult,
+  (postsResult) => postsResult.data // normalized state object with ids & entities
+);
 
-// export const getPostsAsync = createAsyncThunk(
-//   "posts/getPosts",
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const response = await fetch("https://jsonplaceholder.typicode.com/posts");
-//       if (!response.ok) {
-//         throw new Error("Something went wrong!");
-//       }
-//       return response.json();
-//     } catch (error) {
-//       return rejectWithValue("Something went wrong during loading posts!");
-//     }
-//   }
-// );
-
-// export default postSlice.reducer;
+//getSelectors creates these selectors and we rename them with aliases using destructuring
+export const {
+  selectAll: selectAllPosts,
+  selectById: selectPostById,
+  selectIds: selectPostIds,
+  // Pass in a selector that returns the posts slice of state
+} = postsAdapter.getSelectors(
+  (state) => selectPostsData(state) ?? initialState
+);

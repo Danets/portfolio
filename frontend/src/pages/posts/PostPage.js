@@ -12,16 +12,28 @@ import Button from "@mui/material/Button";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
+import { useSelector } from 'react-redux'
+import { selectAllPosts } from '../../store/postApiSlice'
+
 import {
-  useAddPostMutation,
-  useGetPostsMutation,
+  useGetPostsQuery,
+  useAddPostMutation
 } from "../../store/postApiSlice";
 import Post from "../../components/Post/Post";
 
 const PostPage = () => {
   const [posts, setPosts] = useState([]);
 
-  const [getPosts, { isLoading }] = useGetPostsMutation();
+  const postsData = useSelector(state => selectAllPosts(state));
+
+  // const [getPosts, { isLoading }] = useGetPostsMutation();
+  const {
+    data,
+    isLoading,
+    isSuccess,
+    isError,
+    error
+} = useGetPostsQuery();
   const [addPost] = useAddPostMutation();
 
   // OPTONS FOR SELECT
@@ -66,24 +78,25 @@ const PostPage = () => {
 
   // const onChangeHandlerWithCallback = useCallback(onChangeHandler, [posts]);
 
-  const fetchPosts = async () => {
-    const res = await getPosts().unwrap();
-    const posts = res.map((post) => {
-      return {
-        ...post,
-        id: post._id,
-        createdAt: new Date(post.createdAt).toLocaleString("uk-UA", {
-          day: "numeric",
-          month: "long",
-        }),
-        updatedAt: new Date(post.updatedAt).toLocaleString("uk-UA", {
-          day: "numeric",
-          month: "long",
-        }),
-      };
-    });
-    setSortedArr(posts);
-    toast("Posts Loaded!");
+  const fetchPosts = () => {
+    if (data) {
+      const posts = Object.values(data?.entities).map((post) => {
+        return {
+          ...post,
+          // id: post._id,
+          createdAt: new Date(post.createdAt).toLocaleString("uk-UA", {
+            day: "numeric",
+            month: "long",
+          }),
+          updatedAt: new Date(post.updatedAt).toLocaleString("uk-UA", {
+            day: "numeric",
+            month: "long",
+          }),
+        };
+      });
+      setSortedArr(posts);
+      toast("Posts Loaded!");
+    }
   };
 
   const [isEnableForm, setEnableForm] = useState(false);
@@ -111,14 +124,15 @@ const PostPage = () => {
   };
 
   useEffect(() => {
-    (async () => {
-      try {
-        fetchPosts();
-      } catch (err) {
-        toast.error(err?.data?.message || err.error);
-      }
-    })();
-  }, []);
+    fetchPosts();
+    // (async () => {
+    //   try {
+    //     fetchPosts();
+    //   } catch (err) {
+    //     toast.error(err?.data?.message || err.error);
+    //   }
+    // })();
+  }, [data]);
 
   useEffect(() => {
     if (!keysPosts.includes(queryKey)) {
@@ -130,9 +144,9 @@ const PostPage = () => {
 
   return (
     <>
-      {/* {error && <h2>{error}</h2>} */}
-      {isLoading && <h2>Loading...</h2>}
-      {!isLoading && (
+          {isLoading && <h2>Loading...</h2>}
+      {isError && <h2>{error?.message}</h2>}
+      {isSuccess  && (
         <>
           <h3>
             {queryKey ? `Posts were sorted by ${queryKey}` : "No queryKey"}
