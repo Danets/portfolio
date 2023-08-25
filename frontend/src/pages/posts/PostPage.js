@@ -12,28 +12,13 @@ import Button from "@mui/material/Button";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
-import { useSelector } from 'react-redux'
-import { selectAllPosts } from '../../store/postApiSlice'
-
-import {
-  useGetPostsQuery,
-  useAddPostMutation
-} from "../../store/postApiSlice";
+import { useGetPostsQuery, useAddPostMutation } from "../../store/postApiSlice";
 import Post from "../../components/Post/Post";
 
 const PostPage = () => {
   const [posts, setPosts] = useState([]);
 
-  const postsData = useSelector(state => selectAllPosts(state));
-
-  // const [getPosts, { isLoading }] = useGetPostsMutation();
-  const {
-    data,
-    isLoading,
-    isSuccess,
-    isError,
-    error
-} = useGetPostsQuery();
+  const { data, isLoading, isSuccess, isError, error } = useGetPostsQuery();
   const [addPost] = useAddPostMutation();
 
   // OPTONS FOR SELECT
@@ -61,20 +46,20 @@ const PostPage = () => {
   };
 
   const [queryKey, setKey] = useState(query.sort);
+  const [valueSelect, setValueSelect] = useState('');
   const [sortedposts, setSortedposts] = useState(onSortPosts(posts, queryKey));
 
   const setSortedArr = (posts) => {
-    if (posts) {
       setPosts(posts);
-      setSortedposts(onSortPosts(posts, posts[0]?.title));
-    }
+      setSortedposts(onSortPosts(posts, 'title'));
   };
 
   const onChangeHandler = (e) => {
+    setValueSelect(e.target.value);
     setSortedposts(onSortPosts(posts, e.target.value));
   };
 
-  const onChangeHandlerMemo = useMemo(() => onChangeHandler, [posts]);
+  // const onChangeHandlerMemo = useMemo(() => onChangeHandler, [posts]);
 
   // const onChangeHandlerWithCallback = useCallback(onChangeHandler, [posts]);
 
@@ -83,7 +68,6 @@ const PostPage = () => {
       const posts = Object.values(data?.entities).map((post) => {
         return {
           ...post,
-          // id: post._id,
           createdAt: new Date(post.createdAt).toLocaleString("uk-UA", {
             day: "numeric",
             month: "long",
@@ -125,13 +109,6 @@ const PostPage = () => {
 
   useEffect(() => {
     fetchPosts();
-    // (async () => {
-    //   try {
-    //     fetchPosts();
-    //   } catch (err) {
-    //     toast.error(err?.data?.message || err.error);
-    //   }
-    // })();
   }, [data]);
 
   useEffect(() => {
@@ -144,20 +121,21 @@ const PostPage = () => {
 
   return (
     <>
-          {isLoading && <h2>Loading...</h2>}
+      {isLoading && <h2>Loading...</h2>}
       {isError && <h2>{error?.message}</h2>}
-      {isSuccess  && (
+      {isSuccess && (
         <>
           <h3>
             {queryKey ? `Posts were sorted by ${queryKey}` : "No queryKey"}
           </h3>
+
           <FormControl sx={{ m: 1, minWidth: 120 }}>
             <InputLabel id="sort-select">Sorting</InputLabel>
             <Select
               labelId="sort-select"
               label="Sorting"
-              // value={"title"}
-              onChange={onChangeHandlerMemo}
+              value={valueSelect}
+              onChange={onChangeHandler}
             >
               {keysPosts.map((prop, idx) => (
                 <MenuItem key={idx} value={prop}>
@@ -166,9 +144,11 @@ const PostPage = () => {
               ))}
             </Select>
           </FormControl>
+
           <Button variant="contained" onClick={enableAddingForm}>
             Add New Post
           </Button>
+
           {!isEnableForm &&
             sortedposts.map((post, idx) => <Post key={idx} {...post} />)}
           {isEnableForm && (
