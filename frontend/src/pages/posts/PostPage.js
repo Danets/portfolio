@@ -14,6 +14,7 @@ import * as Yup from "yup";
 
 import { useGetPostsQuery, useAddPostMutation } from "../../store/postApiSlice";
 import Post from "../../components/Post/Post";
+import Search from "../../components/Layout/Search";
 
 const PostPage = () => {
   const [posts, setPosts] = useState([]);
@@ -46,12 +47,18 @@ const PostPage = () => {
   };
 
   const [queryKey, setKey] = useState(query.sort);
-  const [valueSelect, setValueSelect] = useState('');
+  const [valueSelect, setValueSelect] = useState("");
   const [sortedposts, setSortedposts] = useState(onSortPosts(posts, queryKey));
 
+  const [search, setSearch] = useState("");
+
+  const handleSearch = (searchText) => {
+    setSearch(searchText);
+  };
+
   const setSortedArr = (posts) => {
-      setPosts(posts);
-      setSortedposts(onSortPosts(posts, 'title'));
+    setPosts(posts);
+    setSortedposts(onSortPosts(posts, "title"));
   };
 
   const onChangeHandler = (e) => {
@@ -145,12 +152,20 @@ const PostPage = () => {
             </Select>
           </FormControl>
 
+          <Search onSearch={handleSearch} />
+
           <Button variant="contained" onClick={enableAddingForm}>
             Add New Post
           </Button>
 
           {!isEnableForm &&
-            sortedposts.map((post, idx) => <Post key={idx} {...post} />)}
+            sortedposts
+              .filter((post) => {
+                return search.toLowerCase() === ""
+                  ? post
+                  : post.title.toLowerCase().includes(search);
+              })
+              .map((post, idx) => <Post key={idx} {...post} />)}
           {isEnableForm && (
             <Formik
               initialValues={initialValues}
