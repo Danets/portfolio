@@ -22,9 +22,10 @@ input + label {
   margin-right: 20px;
 }
 
-input[type='text'],
+/* input[type='text'],
 input[type='email'],
-input[type='password'],
+input[type='password'], */
+input,
 textarea,
 select {
   display: flex;

@@ -15,6 +15,7 @@ import * as Yup from "yup";
 import { useGetPostsQuery, useAddPostMutation } from "../../store/postApiSlice";
 import Post from "../../components/Post/Post";
 import Search from "../../components/Layout/Search";
+import styles from "./PostPage.module.css";
 
 const PostPage = () => {
   const [posts, setPosts] = useState([]);
@@ -136,27 +137,29 @@ const PostPage = () => {
             {queryKey ? `Posts were sorted by ${queryKey}` : "No queryKey"}
           </h3>
 
-          <FormControl sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="sort-select">Sorting</InputLabel>
-            <Select
-              labelId="sort-select"
-              label="Sorting"
-              value={valueSelect}
-              onChange={onChangeHandler}
-            >
-              {keysPosts.map((prop, idx) => (
-                <MenuItem key={idx} value={prop}>
-                  {prop}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <div className={styles.actions}>
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="sort-select">Sorting</InputLabel>
+              <Select
+                labelId="sort-select"
+                label="Sorting"
+                value={valueSelect}
+                onChange={onChangeHandler}
+              >
+                {keysPosts.map((prop, idx) => (
+                  <MenuItem key={idx} value={prop}>
+                    {prop}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-          <Search onSearch={handleSearch} />
+            <Search onSearch={handleSearch} />
 
-          <Button variant="contained" onClick={enableAddingForm}>
-            Add New Post
-          </Button>
+            <Button variant="contained" onClick={enableAddingForm}>
+              Add New Post
+            </Button>
+          </div>
 
           {!isEnableForm &&
             sortedposts
