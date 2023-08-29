@@ -23,13 +23,21 @@ const PostPage = () => {
   const { data, isLoading, isSuccess, isError, error } = useGetPostsQuery();
   const [addPost] = useAddPostMutation();
 
-  // OPTONS FOR SELECT
+  // OPTONS FOR SORT
   let keysPosts = [];
   if (posts.length) {
     keysPosts = Object.keys(posts[0]).filter(
       (key) => key === "title" || key === "createdAt" || key === "updatedAt"
     );
   }
+
+  // OPTONS FOR FILTER
+  let options = ["None", "updatedAt"];
+  // if (posts.length) {
+  //   options = Object.keys(posts[0]).filter(
+  //     (key) =>  key === "updatedAt"
+  //   );
+  // }
 
   // LOCATION
   const location = useLocation();
@@ -48,7 +56,6 @@ const PostPage = () => {
   };
 
   const [queryKey, setKey] = useState(query.sort);
-  const [valueSelect, setValueSelect] = useState("");
   const [sortedposts, setSortedposts] = useState(onSortPosts(posts, queryKey));
 
   const [search, setSearch] = useState("");
@@ -62,9 +69,24 @@ const PostPage = () => {
     setSortedposts(onSortPosts(posts, "title"));
   };
 
-  const onChangeHandler = (e) => {
-    setValueSelect(e.target.value);
+  const [valueSorting, setValueSorting] = useState("");
+  const onSortingHandler = (e) => {
+    setValueSorting(e.target.value);
     setSortedposts(onSortPosts(posts, e.target.value));
+  };
+
+  const [valueFilter, setValueFilter] = useState("");
+
+  const onFilterHandler = (e) => {
+    const option = e.target.value;
+    setValueFilter(option);
+    console.log(e.target.value);
+    if (option === 'updatedAt') {
+      const filtered = sortedposts.filter(post => post.updated === true);
+      setSortedposts(onSortPosts(filtered, option));
+    } else {
+      setSortedposts(onSortPosts(posts, 'title'));
+    }
   };
 
   // const onChangeHandlerMemo = useMemo(() => onChangeHandler, [posts]);
@@ -138,13 +160,29 @@ const PostPage = () => {
           </h3>
 
           <div className={styles.actions}>
+          <FormControl sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="sort-select">Filtering</InputLabel>
+              <Select
+                labelId="sort-select"
+                label="Filtering"
+                value={valueFilter}
+                onChange={onFilterHandler}
+              >
+                {options.map((prop, idx) => (
+                  <MenuItem key={idx} value={prop}>
+                    {prop}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
             <FormControl sx={{ m: 1, minWidth: 120 }}>
               <InputLabel id="sort-select">Sorting</InputLabel>
               <Select
                 labelId="sort-select"
                 label="Sorting"
-                value={valueSelect}
-                onChange={onChangeHandler}
+                value={valueSorting}
+                onChange={onSortingHandler}
               >
                 {keysPosts.map((prop, idx) => (
                   <MenuItem key={idx} value={prop}>
