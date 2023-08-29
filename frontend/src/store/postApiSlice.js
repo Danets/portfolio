@@ -51,7 +51,7 @@ export const postApiSlice = apiSlice.injectEndpoints({
         method: "PUT",
         body: data,
       }),
-      // invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
+      invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
     }),
 
     deletePost: builder.mutation({
@@ -59,7 +59,7 @@ export const postApiSlice = apiSlice.injectEndpoints({
         url: `${POSTS_URL}/${id}`,
         method: "DELETE",
       }),
-      // invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
+      invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
     }),
   }),
 });
